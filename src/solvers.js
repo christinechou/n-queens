@@ -13,11 +13,8 @@
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n rooks placed such that none of them can attack each other
 
-
-
 window.findNRooksSolution = function(n) {
   // var solution = undefined; //fixme
-
   // console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
   // create an array board
   var board = new Board({n: n});
@@ -33,24 +30,95 @@ window.findNRooksSolution = function(n) {
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
-
   return n <= 1 ? 1 : n * countNRooksSolutions(n - 1);
   //console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
-  
 };
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
+
+// Input: number
+// Output: 2D Array Solution
+// Edge Cases: 
+
 window.findNQueensSolution = function(n) {
   var solution = undefined; //fixme
 
-  console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
+
   return solution;
+  //console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
 };
 
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
 window.countNQueensSolutions = function(n) {
-  var solutionCount = undefined; //fixme
+  if (n === 0 || n === 1) {
+    return 1;
+  }
+  if (n === 2 || n === 3) {
+    return 0;
+  }
 
-  console.log('Number of solutions for ' + n + ' queens:', solutionCount);
-  return solutionCount;
+  return this.findAllQueenSolutions(n).length;
+};
+
+// HELPER FUNCTIONS
+window.findAllQueenSolutions = function(n) {
+
+  var arr = [];
+
+  for (var i = 0; i < n; i++) {
+    arr.push(i);
+  }
+
+  var permutations = permute(arr, arr.length);
+
+  // filter the perm array by arrays that pass our truth test.
+  // return arrays that contain numbers differences greater than or equal to 2 only.
+
+  var flattened = _.filter(permutations, function(array) {
+    for (var i = 0; i < array.length - 1; i++) {
+      if (Math.abs(array[i] - array[i + 1]) < 2) {
+        return false;
+      }
+    } 
+    return true;
+  });
+
+  // var results = [];
+  // for (var i = 0, i < flattened.length; i++) {
+  //   var a = Array.apply(null, new Array(10)).map(Number.prototype.valueOf,0);
+    
+  // }
+};
+
+
+window.swap = function(array, pos1, pos2) {
+  var temp = array[pos1];
+  array[pos1] = array[pos2];
+  array[pos2] = temp;
+  return array;
+};
+
+
+window.permute = function(collection, n) {
+
+  var result = [];
+  
+  if (n === 1) {
+    var newArr = collection.slice(0);
+    result.push(newArr);
+   
+  } else {
+    for (var i = 1; i <= n; i++) {
+      
+      result = result.concat(permute(collection, n - 1));
+      if (n % 2) {
+        var j = 1;  
+      } else {
+        j = i;  
+      }
+      swap(collection, j - 1, n - 1);
+  }
+  }
+  return result;
+
 };
