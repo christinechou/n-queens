@@ -41,11 +41,20 @@ window.countNRooksSolutions = function(n) {
 // Edge Cases: 
 
 window.findNQueensSolution = function(n) {
-  var solution = undefined; //fixme
+  if (n === 0) {
+    return {n: 0};
+  } else if (n === 2) {
+    return {n: 2};
+  } else if (n === 3) {
+    return {n: 3};
+  } else {
+    var numSolutions = findAllQueenSolutions(n).length;
+    var solutions = findAllQueenSolutions(n);
+    var randIndex = Math.floor(Math.random() * numSolutions);
 
+    return solutions[0].rows();
+  }
 
-  return solution;
-  //console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
 };
 
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
@@ -57,12 +66,13 @@ window.countNQueensSolutions = function(n) {
     return 0;
   }
 
-  return this.findAllQueenSolutions(n).length;
+  return findAllQueenSolutions(n).length;
 };
 
 // HELPER FUNCTIONS
 window.findAllQueenSolutions = function(n) {
-
+  
+  // Instantiate an array of n length;
   var arr = [];
 
   for (var i = 0; i < n; i++) {
@@ -83,11 +93,26 @@ window.findAllQueenSolutions = function(n) {
     return true;
   });
 
-  // var results = [];
-  // for (var i = 0, i < flattened.length; i++) {
-  //   var a = Array.apply(null, new Array(10)).map(Number.prototype.valueOf,0);
-    
-  // }
+  // pass flattened array of arrays into helper function that creates boards based on position
+  // in flattened array
+
+  var generateBoard = function(arrayOfArrays) { //returns array of boards
+    return _.map(arrayOfArrays, function(array) {
+      var board = new Board({n: n});
+      
+      for (var i = 0; i < array.length; i++) {
+        board.togglePiece(i, array[i]);
+      } 
+      return board;
+    });
+  };
+
+  var possibleBoards = generateBoard(flattened);
+
+  return _.filter(possibleBoards, function(board) {
+    return board.hasAnyQueensConflicts() === false;
+  });
+
 };
 
 
@@ -117,7 +142,8 @@ window.permute = function(collection, n) {
         j = i;  
       }
       swap(collection, j - 1, n - 1);
-  }
+
+    }
   }
   return result;
 
