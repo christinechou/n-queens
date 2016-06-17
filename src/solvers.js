@@ -36,25 +36,19 @@ window.countNRooksSolutions = function(n) {
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
 
-// Input: number
-// Output: 2D Array Solution
-// Edge Cases: 
 
 window.findNQueensSolution = function(n) {
-  if (n === 0) {
-    return {n: 0};
-  } else if (n === 2) {
-    return {n: 2};
-  } else if (n === 3) {
-    return {n: 3};
-  } else {
-    var numSolutions = findAllQueenSolutions(n).length;
-    var solutions = findAllQueenSolutions(n);
-    var randIndex = Math.floor(Math.random() * numSolutions);
-
-    return solutions[0].rows();
+  var b = new Board({n: n});
+  var flattened = findAllQueenSolutions(n)[0];
+  if (n === 2 || n === 3) {
+    return b.rows();
   }
-
+  //[1,3,0,2]
+  for (var i = 0; i < n; i++) {
+    var row = b.get(i); 
+    b.togglePiece(i, flattened[i]);
+  }
+  return b.rows();
 };
 
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
@@ -72,79 +66,30 @@ window.countNQueensSolutions = function(n) {
 // HELPER FUNCTIONS
 window.findAllQueenSolutions = function(n) {
   
-  // Instantiate an array of n length;
-  var arr = [];
+  // create results array
+  var results = [];
+  findNQueens([]);
 
-  for (var i = 0; i < n; i++) {
-    arr.push(i);
-  }
-
-  var permutations = permute(arr, arr.length);
-
-  // filter the perm array by arrays that pass our truth test.
-  // return arrays that contain numbers differences greater than or equal to 2 only.
-
-  var flattened = _.filter(permutations, function(array) {
-    for (var i = 0; i < array.length - 1; i++) {
-      if (Math.abs(array[i] - array[i + 1]) < 2) {
-        return false;
+  var findNQueens = function(current) {
+    if (current.length === n) {
+      results.push(current);
+    } else {
+      for (var i = 0; i < n; i++) {
+        for (var j = 0; l = current.length, j < l; j++) {
+          var prev = current[j];
+          if (prev === i) { 
+            break;
+          } if (prev - (l - j) === i) {
+            break;
+          } if (prev + (l - j) === i) {
+            break;
+          }
+        } 
+        if (j === l) {
+          findNQueens(current.concat([i]));
+        }
       }
-    } 
-    return true;
-  });
-
-  // pass flattened array of arrays into helper function that creates boards based on position
-  // in flattened array
-
-  var generateBoard = function(arrayOfArrays) { //returns array of boards
-    return _.map(arrayOfArrays, function(array) {
-      var board = new Board({n: n});
-      
-      for (var i = 0; i < array.length; i++) {
-        board.togglePiece(i, array[i]);
-      } 
-      return board;
-    });
-  };
-
-  var possibleBoards = generateBoard(flattened);
-
-  return _.filter(possibleBoards, function(board) {
-    return board.hasAnyQueensConflicts() === false;
-  });
-
-};
-
-// heaps algorithm
-
-window.swap = function(array, pos1, pos2) {
-  var temp = array[pos1];
-  array[pos1] = array[pos2];
-  array[pos2] = temp;
-  return array;
-};
-
-window.permute = function(collection, n) {
-
-  var result = [];
-  
-  if (n === 1) {
-    result.push(collection.slice(0));
-   
-  } else {
-    for (var i = 1; i <= n; i++) {
-      
-      result = result.concat(permute(collection, n - 1));
-      if (n % 2) {
-        var j = 1;  
-      } else {
-        j = i;  
-      }
-      swap(collection, j - 1, n - 1);
-
     }
-  }
-  return result;
+  };
+  return results;
 };
-
-
