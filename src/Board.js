@@ -79,38 +79,26 @@
     //
     // test if a specific row on this board contains a conflict
     hasRowConflictAt: function(rowIndex) {
-      var row = this.rows()[rowIndex]; // return row array
+      var row = this.get(rowIndex);
       var itemCount = 0;
 
       for (var i = 0; i < row.length; i++) {
-        if (row[i] === 1) {
-          itemCount++;
-        }
+        itemCount += row[i];
       }
       return itemCount > 1;
     },
 
     // test if any rows on this board contain conflicts
     hasAnyRowConflicts: function() {
-      if (this.get('n') === 0) {
-        return false;  
-      }
-      
-      var board = this.rows() || [];
+      var size = this.get('n');
 
-      for (var i = 0; i < board.length; i++) {
-        var itemCount = 0;
-
-        for (var j = 0; j < board[i].length; j++) {
-          if (board[i][j] === 1) {
-            itemCount++;
-          }
-        }
-        if (itemCount > 1) {
+      var itemCount = 0;
+      for (var i = 0; i < size; i++) {
+        if (this.hasRowConflictAt(i)) {
           return true;
         }
       }
-      return false; // fixme
+      return false;
     },
 
 
@@ -120,40 +108,27 @@
     //
     // test if a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex) {
-      var board = this.rows() || [];
       var itemCount = 0;
 
-      for (var i = 0; i < board.length; i++) {
-        if (board[i][colIndex] === 1) {
-          itemCount++;
-        }
-      }
+      for (var i = 0; i < this.get('n'); i++) {
+        var row = this.get(i);
+// console.log(row, 'row[colIndex]', row[colIndex])
 
+        itemCount += row[colIndex];
+      }
       return itemCount > 1; // fixme
     },
 
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
-      if (this.get('n') === 0) {
-        return false;  
-      }
-      var board = this.rows();
-      var numCols = board[0].length;
+      var row = this.get('n');
 
-      for (var j = 0; j < numCols; j++) {
-        var itemCount = 0;
-
-        for (var i = 0; i < board.length; i++) {
-          if (board[i][j] === 1) {
-            itemCount++;
-          }
-        }
-
-        if (itemCount > 1) {
+      for (var i = 0; i < row; i++) {
+        if (this.hasColConflictAt(i)) {
           return true;
-        }
+        } 
       }
-      return false; // fixme
+      return false;
     },
 
 
@@ -184,7 +159,7 @@
         col--;
       }
 
-      return itemCount1 > 1 || itemCount2 > 1; // fixme
+      return itemCount1 > 1 || itemCount2 > 1;  // fixme
     },
 
     // test if any major diagonals on this board contain conflicts

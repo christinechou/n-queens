@@ -115,6 +115,7 @@ window.findAllQueenSolutions = function(n) {
 
 };
 
+// heaps algorithm
 
 window.swap = function(array, pos1, pos2) {
   var temp = array[pos1];
@@ -123,14 +124,12 @@ window.swap = function(array, pos1, pos2) {
   return array;
 };
 
-
 window.permute = function(collection, n) {
 
   var result = [];
   
   if (n === 1) {
-    var newArr = collection.slice(0);
-    result.push(newArr);
+    result.push(collection.slice(0));
    
   } else {
     for (var i = 1; i <= n; i++) {
@@ -146,5 +145,6 @@ window.permute = function(collection, n) {
     }
   }
   return result;
-
 };
+
+
